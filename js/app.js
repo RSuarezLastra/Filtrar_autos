@@ -23,7 +23,7 @@ const datosBusqueda = {
     color: ''
 }
 //eventos
-document.addEventListener('DOMContentLoaded',() => {
+document.addEventListener('DOMContentLoaded', () => {
     mostrarAutos(autos);
     llenarSelect();
 })
@@ -47,21 +47,23 @@ maximo.addEventListener('change', (e) => {
 })
 puertas.addEventListener('change', (e) => {
     datosBusqueda.puertas = e.target.value
+    filtrarAuto();
 })
 transmision.addEventListener('change', (e) => {
     datosBusqueda.transmision = e.target.value
+    filtrarAuto();
 })
 color.addEventListener('change', (e) => {
     datosBusqueda.color = e.target.value
-    console.log(datosBusqueda)
+    filtrarAuto();
 })
 
 //funcones
-function mostrarAutos(autos){
+function mostrarAutos(autos) {
     limpiarHtml(); // Elimina el HTML previo
-    
+
     autos.forEach(auto => {
-        const {marca, modelo, year, puertas, color, transmision, precio} = auto;
+        const { marca, modelo, year, puertas, color, transmision, precio } = auto;
 
         const autoHtml = document.createElement('P')
         autoHtml.textContent = `
@@ -71,8 +73,8 @@ function mostrarAutos(autos){
     })
 }
 // genera los datos del select
-function llenarSelect(){
-    for(let i = max; i >= min; i--){
+function llenarSelect() {
+    for (let i = max; i >= min; i--) {
 
         const fecha = document.createElement('option');
         fecha.value = i;
@@ -81,42 +83,76 @@ function llenarSelect(){
     }
 }
 
-function filtrarAuto(){
-    const resultado = autos.filter(filtrarMarca).filter(filtrarAÑo).filter(filtrarMin).filter(filtrarMax)
-    mostrarAutos(resultado)
+function filtrarAuto() {
+    const resultado = autos.filter(filtrarMarca).filter(filtrarAÑo).filter(filtrarMin).filter(filtrarMax).filter(filtrarPuertas).filter(filtrarTransmision).filter(filtrarColor)
+
+    if(resultado.length){
+        mostrarAutos(resultado);
+    }else{
+        notFound()
+    }
 }
 
-function filtrarMarca(auto){
+function filtrarMarca(auto) {
     const { marca } = datosBusqueda;
-    if( marca ){
+    if (marca) {
         return auto.marca === marca
     }
     return auto
 }
-function filtrarAÑo(auto){
+function filtrarAÑo(auto) {
     const { year } = datosBusqueda;
-    if( year ){
+    if (year) {
         return auto.year == year
     }
     return auto
 }
-function filtrarMin(auto){
+function filtrarMin(auto) {
     const { minimo } = datosBusqueda;
-    if( minimo ){
+    if (minimo) {
         return auto.precio >= minimo
     }
     return auto
 }
-function filtrarMax(auto){
+function filtrarMax(auto) {
     const { maximo } = datosBusqueda;
-    if( maximo ){
+    if (maximo) {
         return auto.precio <= maximo
     }
     return auto
 }
+function filtrarPuertas(auto) {
+    const { puertas } = datosBusqueda;
+    if (puertas) {
+        return auto.puertas == puertas
+    }
+    return auto
+}
+function filtrarTransmision(auto) {
+    const { transmision } = datosBusqueda;
+    if (transmision) {
+        return auto.transmision === transmision
+    }
+    return auto
+}
+function filtrarColor(auto) {
+    const { color } = datosBusqueda;
+    if (color) {
+        return auto.color === color
+    }
+    return auto
+}
 
-function limpiarHtml(){
-    while(resultado.firstChild){
+function limpiarHtml() {
+    while (resultado.firstChild) {
         resultado.removeChild(resultado.firstChild)
     }
+}
+
+function notFound(){
+    limpiarHtml();
+    const noHayAutos = document.createElement('DIV');
+    noHayAutos.classList.add('alerta', 'error');
+    noHayAutos.textContent = 'No hay autos con esas caracteristicas'
+    resultado.appendChild(noHayAutos);
 }
