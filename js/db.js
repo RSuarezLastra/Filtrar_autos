@@ -46,7 +46,7 @@ const autos = [
 	},
 	{
 		marca: 'Mercedes Benz',
-		modelo: 'Clase C',
+		modelo: 'Clase G',
 		year: 2015,
 		precio: 25000,
 		puertas: 4,
